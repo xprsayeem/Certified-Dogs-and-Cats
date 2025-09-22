@@ -1,6 +1,8 @@
 # Certified-Dogs-and-Cats
 This project turns the City of Toronto’s “Licensed Cats and Dogs” CSV into a small, production-like lakehouse on AWS with Databricks. The goal is to show clear, reliable data engineering practices on a real civic dataset while keeping cost low and the code reproducible.
 
+Open Data Link: https://open.toronto.ca/dataset/licensed-dogs-and-cats
+
 # What this project is about
 - Build a small end to end lakehouse on AWS with Databricks, from raw files to modeled tables you can query
 - Practice production habits: reliable pipelines, simple tests, clear lineage, and cost awareness
@@ -13,7 +15,7 @@ This project turns the City of Toronto’s “Licensed Cats and Dogs” CSV into
 - In Databricks, created a Storage Credential using that role’s ARN.
 - Still in Databricks, created an External Location pointing to my S3 bucket, validated it, and granted myself appropriate permissions.
   
-**In Databricks**
+**From Raw CSV to Bronze Delta**
 - Created Catalog and Schema
   - Made pets catalog and pets.core schema in Unity Catalog, granted myself USE and CREATE TABLE, then set context with USE CATALOG pets; USE SCHEMA core;
 - Defined paths and a strict schema
