@@ -1,0 +1,59 @@
+resources:
+  jobs:
+    Daily_Licensed_Pets:
+      name: Daily Licensed Pets
+      email_notifications:
+        on_failure:
+          - sayeem.m@hotmail.com
+      schedule:
+        quartz_cron_expression: 41 0 10 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: Fetch_To_Raw
+          notebook_task:
+            notebook_path: /Workspace/Users/sayeem.m@hotmail.com/fetch_to_raw
+            source: WORKSPACE
+          email_notifications:
+            on_failure:
+              - sayeem.m@hotmail.com
+          notification_settings:
+            no_alert_for_skipped_runs: true
+        - task_key: Raw_To_Bronze
+          depends_on:
+            - task_key: Fetch_To_Raw
+          notebook_task:
+            notebook_path: /Workspace/Users/sayeem.m@hotmail.com/bronze
+            source: WORKSPACE
+          max_retries: 2
+          min_retry_interval_millis: 1800000
+          retry_on_timeout: true
+          disable_auto_optimization: true
+          email_notifications:
+            on_failure:
+              - sayeem.m@hotmail.com
+          notification_settings:
+            no_alert_for_skipped_runs: true
+            no_alert_for_canceled_runs: true
+        - task_key: Bronze_To_Silver
+          depends_on:
+            - task_key: Raw_To_Bronze
+          notebook_task:
+            notebook_path: /Workspace/Users/sayeem.m@hotmail.com/silver
+            source: WORKSPACE
+          max_retries: 2
+          min_retry_interval_millis: 600000
+          retry_on_timeout: true
+          disable_auto_optimization: true
+        - task_key: Silver_To_Gold
+          depends_on:
+            - task_key: Bronze_To_Silver
+          notebook_task:
+            notebook_path: /Workspace/Users/sayeem.m@hotmail.com/gold
+            source: WORKSPACE
+      queue:
+        enabled: true
+      parameters:
+        - name: ingestion_date
+          default: ""
+      performance_target: PERFORMANCE_OPTIMIZED
